@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackUp - Team Collaboration</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles for new views */
+        .view-section {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .view-section.active {
+            display: flex;
+        }
+        .dashboard-view {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .dashboard-logo {
+            font-size: 3em;
+            font-weight: bold;
+            color: #3F0E40;
+            margin-bottom: 20px;
+        }
+        .contact-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .team-detail-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+        .team-member-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+        }
+        .nav-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #a0a0a0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #350d36;
+            color: white;
+        }
+        .nav-section-title {
+            padding: 15px 15px 5px;
+            font-size: 0.8em;
+            color: #a0a0a0;
+            font-weight: 600;
+        }
+        .chat-btn-small {
+            background: #3F0E40;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5); 
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-modal:hover,
+        .close-modal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .member-stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+        }
+        .stat-value {
+            display: block;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3F0E40;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .tasks-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .task-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-status {
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: #eee;
+        }
+        .task-status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .task-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .modal-actions {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="team-name">TrackUp</div>
+                <div class="user-status">Online</div>
+            </div>
+            
+            <div class="nav-item active" id="nav-dashboard">
+                <span>🏠</span> Home
+            </div>
+
+            <div class="nav-section-title">ASSISTANT</div>
+            <div class="nav-item" id="nav-buddy">
+                <span>🤖</span> TrackUp Buddy
+            </div>
+
+            <div class="nav-section-title">TEAMS</div>
+            <div id="teams-nav-list">
+                <!-- Teams list for navigation -->
+            </div>
+            <div class="nav-item" id="nav-all-teams">
+                <span>👥</span> View All Teams
+            </div>
+
+            <div class="nav-section-title">SUPPORT</div>
+            <div class="nav-item" id="nav-contact">
+                <span>📞</span> Contact Us
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-section active dashboard-view">
+                <div class="dashboard-logo">TrackUp</div>
+                <p>Welcome to your intelligent project management workspace.</p>
+                <button class="action-btn" onclick="document.getElementById('nav-buddy').click()">Start Chatting</button>
+            </div>
+
+            <!-- Chat View (TrackUp Buddy) -->
+            <div id="view-chat" class="view-section" style="padding: 0;">
+                <header class="chat-header">
+                    <div class="channel-info">
+                        <span class="channel-name">TrackUp Buddy</span>
+                    </div>
+                    <div class="header-actions">
+                        <button class="action-btn" onclick="document.getElementById('chat-container').innerHTML = ''">Clear Chat</button>
+                    </div>
+                </header>
+                
+                <div class="chat-container" id="chat-container">
+                    <div class="message bot-message">
+                        <div class="avatar">T</div>
+                        <div class="message-body">
+                            <div class="message-info">
+                                <span class="sender-name">TrackUp Bot</span>
+                                <span class="timestamp">Now</span>
+                            </div>
+                            <div class="message-content">
+                                Hello! I'm TrackUp. I can help you assign tasks, share documents, check progress, and more. How can I assist you today?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <form id="chat-form">
+                        <div class="input-wrapper">
+                            <button type="button" class="attach-btn" id="attach-btn">+</button>
+                            <input type="file" id="file-upload" hidden>
+                            <input type="text" id="user-input" placeholder="Message TrackUp Buddy..." autocomplete="off">
+                            <button type="submit" class="send-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Teams View -->
+            <div id="view-teams" class="view-section">
+                <h2>Teams Overview</h2>
+                <div id="teams-detail-container">
+                    <!-- Detailed team info goes here -->
+                    <p>Loading teams...</p>
+                </div>
+            </div>
+
+            <!-- Contact View -->
+            <div id="view-contact" class="view-section">
+                <div class="contact-card">
+                    <h2>Contact Us</h2>
+                    <p>We are here to help!</p>
+                    <br>
+                    <p><strong>Email:</strong> support@trackup.com</p>
+                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                    <p><strong>Address:</strong> 123 AI Blvd, Tech City</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Member Details Modal -->
+    <div id="member-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-member-name">Member Name</h2>
+            <div class="member-stats">
+                <div class="stat-box">
+                    <span class="stat-value" id="modal-completed">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="modal-total">0</span>
+                    <span class="stat-label">Total Tasks</span>
+                </div>
+            </div>
+            <h3>Assigned Tasks</h3>
+            <div id="modal-tasks-list" class="tasks-list">
+                <!-- Tasks will be injected here -->
+            </div>
+            <div class="modal-actions">
+                <button id="modal-chat-btn" class="action-btn">Chat with Member</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
