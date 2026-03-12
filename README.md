@@ -20,6 +20,21 @@ TrackUp is a conversational AI agent for managing group project activities. It h
 
 ## Setup
 
+### Run in GitHub Codespaces
+
+1.  Click the green **Code** button on the repository page and select **Open with Codespaces**.
+2.  Once the codespace is ready, dependencies will be installed automatically.
+3.  Copy `.env.example` to `.env` and fill in your API keys:
+    ```bash
+    cp .env.example .env
+    ```
+4.  Run the application:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+
+### Run Locally
+
 1.  Clone the repository.
 2.  Create a virtual environment:
     ```bash
