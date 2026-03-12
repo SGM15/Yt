@@ -1,0 +1,252 @@
+:root {
+    --sidebar-bg: #3F0E40;
+    --sidebar-text: #cfc3cf;
+    --sidebar-hover: #350d36;
+    --primary-color: #1164A3;
+    --bg-color: #ffffff;
+    --border-color: #e2e2e2;
+    --text-color: #1d1c1d;
+    --timestamp-color: #616061;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.user-status {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+.sidebar-section {
+    padding: 16px 0;
+}
+
+.section-title {
+    padding: 0 16px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
+
+.channel, .dm-user {
+    padding: 6px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.channel:hover, .dm-user:hover {
+    background-color: var(--sidebar-hover);
+}
+
+.channel.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.online { background-color: #2bac76; }
+.status-dot.offline { background-color: #b0b0b0; }
+.status-dot.busy { background-color: #e01e5a; }
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+}
+
+.chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.channel-name {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.channel-hash {
+    color: var(--timestamp-color);
+    margin-right: 4px;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.chat-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.message {
+    display: flex;
+    gap: 12px;
+    max-width: 100%;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.message-body {
+    flex: 1;
+}
+
+.message-info {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.sender-name {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: var(--timestamp-color);
+}
+
+.message-content {
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Input Area */
+.input-area {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.input-wrapper {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+}
+
+.attach-btn {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 1.2rem;
+    color: var(--timestamp-color);
+    cursor: pointer;
+    border-right: 1px solid var(--border-color);
+}
+
+input[type="text"] {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.send-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    color: var(--timestamp-color);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.send-btn:hover {
+    background-color: #f8f8f8;
+    color: var(--primary-color);
+}
+
+/* Loading */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--timestamp-color);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
